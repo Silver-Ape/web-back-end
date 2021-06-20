@@ -12,6 +12,19 @@ To run application for development:
 docker-compose up --build
 ```
 
+Connect to development databse:
+
+First create ``` .env ``` at root level and inside ``` .env ``` :
+```bash
+RDS_PORT=<port>
+DATABASE=<database name>
+PASSWORD=<password>
+USER=<username>
+HOST=<host address>
+
+```
+
+
 To run application for production:
 
 ```bash
