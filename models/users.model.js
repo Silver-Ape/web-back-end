@@ -5,7 +5,8 @@
 // verified          INT, default -> 0
 // topic             VARCHAR(255), default -> null
 // authors           INT, Unique, default -> null
-// email             VARCHAR(255), default -> null
+// email             VARCHAR(255), Unique, Not NULL
 // website           VARCHAR(255), default -> null
 // originationName   VARCHAR(255), default -> null
 // originationLink   VARCHAR(255), default -> null
+// password          VARCHAR(255), Not NULL
