@@ -12,7 +12,7 @@ To run application for development:
 docker-compose up --build
 ```
 
-Connect to development databse:
+Connect to development databse and work aith auth route:
 
 First create ``` .env ``` at root level and inside ``` .env ``` :
 ```bash
@@ -21,6 +21,9 @@ DATABASE=<database name>
 PASSWORD=<password>
 USER=<username>
 HOST=<host address>
+SECRET_KEY=<>
+JWT_SECRET=<>
+JWT_DATE=<>
 
 ```
 
