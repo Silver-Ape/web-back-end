@@ -16,7 +16,7 @@ exports.createUser = asyncHandler(async (req, res, next) => {
     }
 
     hashPassword = Auth.hashPassword(password)
-    
+
     // Create a new user
     const newUser = new Auth({
         username: username,
@@ -58,7 +58,7 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
     }
 
     const hashPassword = Auth.hashPassword(password)
-    
+
     Auth.loginUser(username, hashPassword,(err, data) => {
         if(err){
             res.status(400).send({
@@ -79,7 +79,7 @@ const sendTokenRosponse = (user, statusCode ,res) => {
 
     if(process.env.NODE_ENV === 'production'){
         options.secure = true;
-    } 
+    }
 
     res
         .status(statusCode)
@@ -89,4 +89,3 @@ const sendTokenRosponse = (user, statusCode ,res) => {
             token
         });
 }
-

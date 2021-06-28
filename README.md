@@ -35,5 +35,5 @@ To run application for production:
 docker build -t sliver-ape/back-end .
 
 # Start server
-docker run -it -p 5000:5000  -v ${pwd}:/app sliver-ape/back-end 
+docker run -it -p 5000:5000  -v ${pwd}:/app sliver-ape/back-end
 ```

@@ -12,7 +12,7 @@ const auth = require("./routes/auth.route");
 //       console.error('Database connection failed: ' + err.stack);
 //       return;
 //     }
-  
+
 //     console.log('Connected to database.');
 //   });
 
