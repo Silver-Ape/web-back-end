@@ -27,7 +27,7 @@ const Auth = function(auth){
     this.website = auth.website;
     this.originationName = auth.originationName;
     this.originationLink = auth.originationLink;
-    this.password = auth.password;    
+    this.password = auth.password;
 };
 
 Auth.create = (user, result) => {
