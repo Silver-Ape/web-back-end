@@ -6,6 +6,7 @@ const app = express();
 
 //Route files
 const auth = require("./routes/auth.route");
+const auth = require("./routes/authors.route");
 
 // sql.connect(function(err) {
 //     if (err) {
