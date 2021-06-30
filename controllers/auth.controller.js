@@ -1,6 +1,5 @@
 const Auth = require("../models/auth.model")
 const asyncHandler = require("../middleware/async");
-const { hashPassword } = require("../models/auth.model");
 
 
 //@desc    Register user
@@ -15,7 +14,7 @@ exports.createUser = asyncHandler(async (req, res, next) => {
         });
     }
 
-    hashPassword = Auth.hashPassword(password)
+    const hashPassword = Auth.hashPassword(password)
     
     // Create a new user
     const newUser = new Auth({
