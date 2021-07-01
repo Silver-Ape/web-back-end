@@ -71,6 +71,8 @@ exports.getAuthor = asyncHandler(async (req, res, next) => {
                 message: "Error getting author with that id."
             });
         } else {
+            if (data.length > 0) data = data[0]
+            else data = {}
             res.json(data)
         }
     })
