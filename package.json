@@ -1,14 +1,5 @@
 {
-  "name": "ezsecfullstack",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server",
-    "start.dev": "nodemon"
-  },
   "author": "James",
-  "license": "ISC",
   "dependencies": {
     "@material-ui/lab": "^4.0.0-alpha.57",
     "bcryptjs": "^2.4.3",
@@ -23,10 +14,19 @@
     "mysql": "^2.18.1",
     "request": "^2.88.2"
   },
+  "description": "",
   "devDependencies": {
     "concurrently": "^6.0.0",
     "crypto-js": "^4.0.0",
     "jsonwebtoken": "8.5.1",
-    "nodemon": "^2.0.7"
-  }
+    "nodemon": "^2.0.9"
+  },
+  "license": "ISC",
+  "main": "server.js",
+  "name": "sliver-ape-back-end",
+  "scripts": {
+    "start": "node server",
+    "start.dev": "nodemon"
+  },
+  "version": "1.0.0"
 }
