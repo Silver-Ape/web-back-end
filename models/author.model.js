@@ -28,7 +28,6 @@ Author.create = (user, result) => {
             result(err, null)
             return;
         }
-        console.log(res.insertId)
         user.id = res.insertId
         result(null, user)
     })
@@ -36,7 +35,7 @@ Author.create = (user, result) => {
 
 // This gets author data from the SQL table using an id.
 Author.get = (id, result) => {
-    sql.query(`SELECT id FROM authors where id = "${id}"`, (err, res) => {
+    sql.query(`SELECT * FROM authors where id = "${id}"`, (err, res) => {
         if(err){
             console.log("Authors getAuthor error: ", err);
             result(err, null)
@@ -55,7 +54,6 @@ Author.remove = (id, result) => {
             result(err, null)
             return;
         }
-        console.log(res)
         result(null, res)
     })
 }

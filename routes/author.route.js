@@ -1,10 +1,10 @@
 const express = require("express");
-const {addAuthor, removeAuthor, modifyAuthor, getAuthor} = require('../controllers/author.controller')
+const {createAuthor, removeAuthor, getAuthor} = require('../controllers/author.controller')
 
 const router = express.Router();
 
 
-router.post('/create', addAuthor);
+router.post('/create', createAuthor);
 router.post('/remove', removeAuthor);
 router.get('/get', getAuthor);
 

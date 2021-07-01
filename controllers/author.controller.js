@@ -9,7 +9,7 @@ Description: Handlers which are used by HTTP routes to perform
 
 const Author = require("../models/author.model")
 const asyncHandler = require("../middleware/async");
-
+const UriUtils = require("../utils/uri")
 
 //@desc    Creates a new author.
 //@route   POST /api/v1/author/create
@@ -21,6 +21,7 @@ exports.createAuthor = asyncHandler(async (req, res, next) => {
         res.status(400).send({
             message: "Required field 'name' cannot be empty!"
         });
+        return
     }
 
     // This creates a new author model object.
@@ -31,42 +32,50 @@ exports.createAuthor = asyncHandler(async (req, res, next) => {
     })
 
     // This adds the author into the database.
-    Author.create(newAuthor,(err,data) => {
+    Author.create(newAuthor,(err, data) => {
         if (err) {
             res.status(400).send({
                 message:
                     err.message || "Some error occurred while creating the author."
             });
+        } else {
+            res.json(data)
         }
-        else sendTokenResponse(data, 200, res);
     })
+
+    console.log("Success: /api/v1/author" + req.url)
 })
 
 //@desc    Gets an author.
 //@route   GET /api/v1/author/get
 //@access  Public
 exports.getAuthor = asyncHandler(async (req, res, next) => {
-    // This is a useful function from one of my other projects. It parses
-    // a get URI and turns all of the properties within the URI into a nice
-    // object.
-    var input = queryStringToJSON(url.parse(req.url).query.replace(/%20/g, " "));
-    var id = input.id;
+    // We need to parse the URL to extract relevant parameters.
+    // First, we get rid of "/get" in the url.
+    var urlToParse = req.url.substring(4)
+    // Then we extract the parameters.
+    var input = UriUtils.parseQuery(urlToParse)
+    var id = input.id
 
     if (id === undefined) {
         res.status(400).send({
             message: "Required field 'id' cannot be empty!"
         });
+        return;
     }
 
     // This tries to get the author.
-    Authors.get(id,(err, data) => {
+    Author.get(id,(err, data) => {
         if (err) {
             res.status(400).send({
-                message: "Not authorized"
+                message: "Error getting author with that id."
             });
+        } else {
+            res.json(data)
         }
-        else sendTokenResponse(data, 200, res);
     })
+
+    console.log("Success: /api/v1/author" + req.url)
 })
 
 //@desc    Removes an author.
@@ -79,6 +88,7 @@ exports.removeAuthor = asyncHandler(async (req, res, next) => {
         res.status(400).send({
             message: "Required field 'name' cannot be empty!"
         });
+        return
     }
 
     // This removes the author from the database.
@@ -88,25 +98,12 @@ exports.removeAuthor = asyncHandler(async (req, res, next) => {
                 message:
                     err.message || "Some error occurred while removing the author."
             });
+        } else if (data.affectedRows < 1) {
+            res.json({"success": false})
+        } else {
+            res.json({"success": true})
         }
-        else sendTokenResponse(data, 200, res);
     })
+
+    console.log("Success: /api/v1/author" + req.url)
 })
-
-// Perhaps this should be moved into its own, seperate file? Multiple files define this function.
-const sendTokenResponse = (user, statusCode ,res) => {
-    const token = Auth.signToken(user);
-    const options = {}
-
-    if (process.env.NODE_ENV === 'production') {
-        options.secure = true;
-    }
-
-    res
-        .status(statusCode)
-        .cookie('token', token, options)
-        .json({
-            success: true,
-            token
-        });
-}

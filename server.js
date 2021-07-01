@@ -6,16 +6,16 @@ const app = express();
 
 //Route files
 const auth = require("./routes/auth.route");
-const auth = require("./routes/authors.route");
+const author = require("./routes/author.route");
 
-// sql.connect(function(err) {
-//     if (err) {
-//       console.error('Database connection failed: ' + err.stack);
-//       return;
-//     }
+sql.connect(function(err) {
+    if (err) {
+      console.error('Database connection failed: ' + err.stack);
+      return;
+    }
   
-//     console.log('Connected to database.');
-//   });
+    console.log('Connected to database.');
+  });
 
 // sql.end();
 
@@ -31,6 +31,6 @@ app.get('/test',(req,res) => res.status(200).send(`Hello World`))
 
 //Mount routes
 app.use("/api/v1/auth", auth);
-
+app.use("/api/v1/author", author);
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
