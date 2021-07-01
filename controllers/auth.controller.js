@@ -1,4 +1,5 @@
-const Auth = require("../models/auth.model")
+const Auth = require("../models/auth.model");
+const User = require("../models/users.model");
 const asyncHandler = require("../middleware/async");
 
 
@@ -38,7 +39,8 @@ exports.createUser = asyncHandler(async (req, res, next) => {
                   err.message || "Some error occurred while creating the Customer."
               });
         }
-        else sendTokenRosponse(data, 200, res);
+        else sendTokenRosponse(data.id, 200, res);
+
     })
 
 })
@@ -64,9 +66,22 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
                 message: "Not authorized"
               });
         }
-        else sendTokenRosponse(data, 200, res);
+        
+        else {
+            data = JSON.parse(data);
+            sendTokenRosponse(data[0].id, 200, res);
+        }
     })
 
+
+})
+
+
+//@desc    Testing route
+//@route   GET /api/v1/auth/tester
+//@access  Private
+exports.testing = asyncHandler(async(req, res, next) => {
+    res.status(200).send({message: req.user})    
 
 })
 
