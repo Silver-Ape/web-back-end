@@ -38,4 +38,30 @@ User.findUserById = (id, result) => {
     })
 }
 
+
+User.registerAnthor = (userId, authorId, result) => {
+    userId = parseInt(userId, 10);
+    authorId = parseInt(authorId, 10);
+    sql.query(`UPDATE users SET authors = ${authorId} WHERE id = ${userId} `, (err, res) => {
+        if(err){
+            console.log("error: ", err);
+            result(err, null)
+            return;
+        }
+        result(null, res)
+    })
+}
+
+User.unregisterAuthor = (userId, result) => {
+    userId = parseInt(userId, 10);
+    sql.query(`UPDATE users SET authors = NULL WHERE id = ${userId} `, (err, res) => {
+        if(err){
+            console.log("error: ", err);
+            result(err, null)
+            return;
+        }
+        result(null, res)
+    })
+}
+
 module.exports = User;
