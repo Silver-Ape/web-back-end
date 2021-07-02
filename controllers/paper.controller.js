@@ -91,7 +91,7 @@ exports.updatePaper = asyncHandler(async(req, res, next) => {
         return next(new ErrorResponse('Please provite all require field', 400));
     }
 
-    console.log(req.user.authors)
+
     if(req.user.authors !== authorIds){
         return next(new ErrorResponse("Not authorized to edit this paper", 401));
     }

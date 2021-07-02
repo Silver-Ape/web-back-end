@@ -9,6 +9,7 @@ const app = express();
 //Route files
 const auth = require("./routes/auth.route");
 const paper = require("./routes/paper.route");
+const author = require("./routes/author.route")
 
 // sql.connect(function(err) {
 //     if (err) {
@@ -36,6 +37,7 @@ app.get('/test',(req,res) => res.status(200).send(`Hello World`))
 
 //Mount routes
 app.use("/api/v1/auth", auth);
+app.use("/api/v1/author", author);
 app.use("/api/v1/paper", paper);
 
 app.use(errorHandler)
