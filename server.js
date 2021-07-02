@@ -4,6 +4,7 @@ const cookieParaer = require('cookie-parser');
 const errorHandler = require('./middleware/error');
 require('dotenv').config();
 const sql = require("./config/db")
+const cors = require('cors')
 const app = express();
 
 //Route files
@@ -29,6 +30,9 @@ app.use(cookieParaer());
 app.use(express.json());
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// We need CORS for HTTP requests to work across servers.
+app.use(cors())
 
 const PORT = process.env.PORT || 5000;
 
