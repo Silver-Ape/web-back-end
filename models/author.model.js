@@ -58,4 +58,15 @@ Author.remove = (id, result) => {
     })
 }
 
+Author.updateInfo = (val, result) => {
+    const id = parseInt(val.id, 10);
+    sql.query(`UPDATE authors SET name = '${val.name}', area = '${val.area}' WHERE id = ${id}`, (err, res) => {
+        if(err){
+            result(err, null)
+            return;
+        }
+        result(null, res)
+    })
+}
+
 module.exports = Author;

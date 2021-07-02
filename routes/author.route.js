@@ -1,6 +1,6 @@
 const express = require("express");
-const {createAuthor, removeAuthor, getAuthor} = require('../controllers/author.controller')
-
+const {createAuthor, removeAuthor, getAuthor, updateAuthor} = require('../controllers/author.controller')
+const { protect } = require("../middleware/auth")
 const router = express.Router();
 
 // Create, e.g.
@@ -15,7 +15,7 @@ const router = express.Router();
 //     "rating": null,
 //     "id": 2
 // }
-router.post('/create', createAuthor);
+router.post('/create', protect, createAuthor);
 
 // Remove, e.g.
 // http://localhost:5000/api/v1/author/remove
@@ -25,7 +25,7 @@ router.post('/create', createAuthor);
 // Response: {
 //     "success": true
 // }
-router.post('/remove', removeAuthor);
+router.post('/remove', protect, removeAuthor);
 
 // Remove, e.g.
 // http://localhost:5000/api/v1/author/get?id=2
@@ -36,5 +36,7 @@ router.post('/remove', removeAuthor);
 //         "rating": null
 // }
 router.get('/get', getAuthor);
+
+router.put('/update', protect, updateAuthor);
 
 module.exports = router;

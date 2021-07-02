@@ -27,7 +27,7 @@ const Auth = function(auth){
     this.website = auth.website;
     this.originationName = auth.originationName;
     this.originationLink = auth.originationLink;
-    this.password = auth.password;    
+    this.password = auth.password;
 };
 
 Auth.create = (user, result) => {
@@ -37,9 +37,9 @@ Auth.create = (user, result) => {
             result(err, null)
             return;
         }
-        console.log(res.insertId)
+
         user.id = res.insertId
-        result(null, user)
+        result(null, (user))
     })
 }
 
@@ -50,8 +50,7 @@ Auth.loginUser = (username, password, result) => {
             result(err, null)
             return;
         }
-        console.log(res)
-        result(null, res)
+        result(null, JSON.stringify(res))
     })
 }
 
@@ -60,8 +59,8 @@ Auth.hashPassword = (password) => {
     return hash
 }
 
-Auth.signToken = (user) => {
-    return jwt.sign({id: user.id}, process.env.JWT_SECRET, {
+Auth.signToken = (id) => {
+    return jwt.sign({id: id.toString()}, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_DATE
     })
 };

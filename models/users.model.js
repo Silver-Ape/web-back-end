@@ -10,3 +10,58 @@
 // originationName   VARCHAR(255), default -> null
 // originationLink   VARCHAR(255), default -> null
 // password          VARCHAR(255), Not NULL
+
+const sql = require("../config/db");
+
+
+const User = function(auth){
+    this.id = auth.id;
+    this.username = auth.username;
+    this.active = auth.active;
+    this.verified = auth.verified;
+    this.topic = auth.topic;
+    this.authors = auth.authors
+    this.email = auth.email;
+    this.website = auth.website;
+    this.originationName = auth.originationName;
+    this.originationLink = auth.originationLink;
+};
+
+User.findUserById = (id, result) => {
+    sql.query(`SELECT id,username,active,verified,topic,authors,email,website,originationName,originationLink FROM users WHERE id = ${id} `, (err, res) => {
+        if(err){
+            console.log("error: ", err);
+            result(err, null)
+            return;
+        }
+        result(null, JSON.stringify(res))
+    })
+}
+
+
+User.registerAnthor = (userId, authorId, result) => {
+    userId = parseInt(userId, 10);
+    authorId = parseInt(authorId, 10);
+    sql.query(`UPDATE users SET authors = ${authorId} WHERE id = ${userId} `, (err, res) => {
+        if(err){
+            console.log("error: ", err);
+            result(err, null)
+            return;
+        }
+        result(null, res)
+    })
+}
+
+User.unregisterAuthor = (userId, result) => {
+    userId = parseInt(userId, 10);
+    sql.query(`UPDATE users SET authors = NULL WHERE id = ${userId} `, (err, res) => {
+        if(err){
+            console.log("error: ", err);
+            result(err, null)
+            return;
+        }
+        result(null, res)
+    })
+}
+
+module.exports = User;

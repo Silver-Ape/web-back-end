@@ -7,6 +7,5 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ./:/usr/src/app
-      - /usr/src/app/node_modules # Remove this if you have pure JS dependencies
     ports:
       - "5000:5000"

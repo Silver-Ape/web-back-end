@@ -7,21 +7,26 @@ Description: Handlers which are used by HTTP routes to perform
              in this file are for GET and POST requests.
 */
 
-const Author = require("../models/author.model")
+const Author = require("../models/author.model");
+const User = require("../models/users.model");
 const asyncHandler = require("../middleware/async");
 const UriUtils = require("../utils/uri")
+const ErrorResponse = require("../utils/errorResponse");
+const Auth = require("../models/auth.model");
+
 
 //@desc    Creates a new author.
 //@route   POST /api/v1/author/create
-//@access  Public
+//@access  Private
 exports.createAuthor = asyncHandler(async (req, res, next) => {
     const {name, area} = req.body;
 
+    if(req.user.authors !== null){
+        return next(new ErrorResponse('Already an author', 400));
+    }
+
     if (name === undefined) {
-        res.status(400).send({
-            message: "Required field 'name' cannot be empty!"
-        });
-        return
+        return next(new ErrorResponse('Please provite all require field', 400));
     }
 
     // This creates a new author model object.
@@ -34,16 +39,19 @@ exports.createAuthor = asyncHandler(async (req, res, next) => {
     // This adds the author into the database.
     Author.create(newAuthor,(err, data) => {
         if (err) {
-            res.status(400).send({
-                message:
-                    err.message || "Some error occurred while creating the author."
-            });
+            return next(new ErrorResponse(err.message || "Some error occurred while creating the author.", 400));
         } else {
-            res.json(data)
+            User.registerAnthor(req.user.id, data.id, (err,data) => {
+                if(err){
+                    return next(new ErrorResponse(err.message || "Some error occurred while creating the author.", 400));
+                }else{
+                    res.status(200).json({"success": true})
+                }
+            })
         }
     })
 
-    console.log("Success: /api/v1/author" + req.url)
+    // console.log("Success: /api/v1/author" + req.url)
 })
 
 //@desc    Gets an author.
@@ -58,54 +66,84 @@ exports.getAuthor = asyncHandler(async (req, res, next) => {
     var id = input.id
 
     if (id === undefined) {
-        res.status(400).send({
-            message: "Required field 'id' cannot be empty!"
-        });
-        return;
+        return next(new ErrorResponse('Please provite all require field', 400));
     }
 
     // This tries to get the author.
     Author.get(id,(err, data) => {
         if (err) {
-            res.status(400).send({
-                message: "Error getting author with that id."
-            });
+            return next(new ErrorResponse("Error getting author with that id.", 400));
         } else {
             if (data.length > 0) data = data[0]
             else data = {}
-            res.json(data)
+            res.status(200).send({data: data})
         }
     })
 
-    console.log("Success: /api/v1/author" + req.url)
+    // console.log("Success: /api/v1/author" + req.url)
 })
 
 //@desc    Removes an author.
 //@route   POST /api/v1/author/remove
-//@access  Public
+//@access  Private
 exports.removeAuthor = asyncHandler(async (req, res, next) => {
     const {id} = req.body;
 
+    if (req.user.authors !== id){
+        return next(new ErrorResponse("Not authorized", 401));
+    }
+
     if (id === undefined) {
-        res.status(400).send({
-            message: "Required field 'name' cannot be empty!"
-        });
-        return
+        return next(new ErrorResponse('Please provite all require field', 400));
+
     }
 
     // This removes the author from the database.
     Author.remove(id,(err,data) => {
         if (err) {
-            res.status(400).send({
-                message:
-                    err.message || "Some error occurred while removing the author."
-            });
+            return next(new ErrorResponse(err.message || "Some error occurred while removing the author.", 400));
         } else if (data.affectedRows < 1) {
             res.json({"success": false})
         } else {
-            res.json({"success": true})
+            User.unregisterAuthor(req.user.id, (err, data) => {
+                if(err){
+                    return next(new ErrorResponse(err.message || "Some error occurred while removing the author.", 400));
+                }else{
+                    res.status(200).json({"success": true})
+                }
+            })
+
         }
     })
 
-    console.log("Success: /api/v1/author" + req.url)
+    // console.log("Success: /api/v1/author" + req.url)
+})
+
+// @desc    Update an author.
+// @route   PUT /api/v1/author/update
+// @access  Private
+exports.updateAuthor = asyncHandler(async (req, res, next) => {
+    const {id, name, area} = req.body;
+
+    if(req.user.authors !== id){
+        return next(new ErrorResponse("Not authorized", 401));
+    }
+
+    if(id == undefined || name == undefined || area == undefined){
+        return next(new ErrorResponse('Please provite', 400));
+    }
+
+    const val = {
+        name: name,
+        area: area,
+        id: id
+    }
+
+    Author.updateInfo(val, (err, data) => {
+        if(err){
+            return next(new ErrorResponse(err.message || "Some error occurred while removing the author.", 400));
+        }else{
+            res.status(200).json({"success": true})
+        }
+    })
 })

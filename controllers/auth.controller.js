@@ -1,6 +1,8 @@
-const Auth = require("../models/auth.model")
+const Auth = require("../models/auth.model");
+const User = require("../models/users.model");
 const asyncHandler = require("../middleware/async");
-const { hashPassword } = require("../models/auth.model");
+const ErrorResponse = require("../utils/errorResponse");
+
 
 
 //@desc    Register user
@@ -15,8 +17,8 @@ exports.createUser = asyncHandler(async (req, res, next) => {
         });
     }
 
-    hashPassword = Auth.hashPassword(password)
-    
+    const hashPassword = Auth.hashPassword(password)
+
     // Create a new user
     const newUser = new Auth({
         username: username,
@@ -34,12 +36,10 @@ exports.createUser = asyncHandler(async (req, res, next) => {
     // Save user in the database
     Auth.create(newUser,(err,data) => {
         if(err){
-            res.status(400).send({
-                message:
-                  err.message || "Some error occurred while creating the Customer."
-              });
+            return next(new ErrorResponse(err.message || "Some error occurred while creating the Customer.", 400));
         }
-        else sendTokenRosponse(data, 200, res);
+        else sendTokenRosponse(data.id, 200, res);
+
     })
 
 })
@@ -58,16 +58,29 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
     }
 
     const hashPassword = Auth.hashPassword(password)
-    
+
     Auth.loginUser(username, hashPassword,(err, data) => {
-        if(err){
-            res.status(400).send({
-                message: "Not authorized"
-              });
+        if(err || JSON.parse(data).length === 0){
+
+            return next(new ErrorResponse('Not authorized', 401));
         }
-        else sendTokenRosponse(data, 200, res);
+
+        else {
+            data = JSON.parse(data);
+            console.log(data)
+            sendTokenRosponse(data[0].id, 200, res);
+        }
     })
 
+
+})
+
+
+//@desc    Testing route
+//@route   GET /api/v1/auth/tester
+//@access  Private
+exports.testing = asyncHandler(async(req, res, next) => {
+    res.status(200).send({message: req.user})
 
 })
 
@@ -79,7 +92,7 @@ const sendTokenRosponse = (user, statusCode ,res) => {
 
     if(process.env.NODE_ENV === 'production'){
         options.secure = true;
-    } 
+    }
 
     res
         .status(statusCode)
@@ -89,4 +102,3 @@ const sendTokenRosponse = (user, statusCode ,res) => {
             token
         });
 }
-
