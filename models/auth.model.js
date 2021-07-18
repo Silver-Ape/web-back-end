@@ -28,6 +28,7 @@ const Auth = function(auth){
     this.originationName = auth.originationName;
     this.originationLink = auth.originationLink;
     this.password = auth.password;
+    this.name = auth.name
 };
 
 Auth.create = (user, result) => {

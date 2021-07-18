@@ -9,7 +9,7 @@ const ErrorResponse = require("../utils/errorResponse");
 //@route   POST /api/v1/auth/register
 //@access  Public
 exports.createUser = asyncHandler(async (req, res, next) => {
-    const {username, email, password, topic, website, originationName, originationLink} = req.body;
+    const {username, email, password, topic, website, originationName, originationLink, name} = req.body;
 
     if(username == undefined || email == undefined || password == undefined){
         res.status(400).send({
@@ -30,7 +30,8 @@ exports.createUser = asyncHandler(async (req, res, next) => {
         website: website == undefined? null: website,
         originationName: originationName == undefined? null: originationName,
         originationLink: originationLink == undefined? null: originationLink,
-        password: hashPassword
+        password: hashPassword,
+        name: name == undefined? null :name
     })
 
     // Save user in the database
